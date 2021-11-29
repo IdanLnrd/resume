@@ -8,6 +8,7 @@ const cors = require('cors');
 const { readFileSync, existsSync, readdirSync } = require('fs');
 const {
     PORT,
+    CV_DIR,
     PUBLIC_DIR
 } = process.env;
 
@@ -19,7 +20,8 @@ function getParsedResume(filename) {
 
 const app = express();
 app.use(cors());
-app.use(express.static(PUBLIC_DIR));
+
+
 
 app.get('/list/cv', (req, res) => {
     const dir = readdirSync(`${__dirname}/data`);
@@ -42,6 +44,9 @@ app.get('/parse/cv/:path', (req, res) => {
     return res.json({ err: '', result, input: path });
 });
 
+app.use('/cv', express.static(CV_DIR));
+
+app.use(express.static(PUBLIC_DIR));
 app.listen(PORT, 
     () => console.log(`server running on port: ${PORT}`)
 );
