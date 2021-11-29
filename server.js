@@ -5,7 +5,7 @@ const {
 } = require("child_process");
 const express = require('express');
 const cors = require('cors');
-const { readFileSync, existsSync, readdirSync } = require('fs');
+const {existsSync, readdirSync } = require('fs');
 const {
     PORT,
     CV_DIR,
@@ -21,8 +21,6 @@ function getParsedResume(filename) {
 const app = express();
 app.use(cors());
 
-
-
 app.get('/list/cv', (req, res) => {
     const dir = readdirSync(`${__dirname}/data`);
     const pdfs = dir.filter(f => f.endsWith('.pdf'));
@@ -33,15 +31,16 @@ app.get('/list/cv', (req, res) => {
     })
 });
 
-app.get('/parse/cv/:path', (req, res) => {
-    const path = req.params.path;
+app.get('/parse/cv/:name', (req, res) => {
+    const name = req.params.name;
+    const path = `${__dirname}/${CV_DIR}/${name}`;
     const exists = existsSync(path);
     let result = null;
     if(!exists) {
-        return res.json({ err: 'file not exists', result, input: path })
+        return res.json({ err: 'file not exists', result, input: name })
     }
     result = getParsedResume(path);
-    return res.json({ err: '', result, input: path });
+    return res.json({ err: '', result, input: name });
 });
 
 app.use('/cv', express.static(CV_DIR));

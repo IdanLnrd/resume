@@ -6,8 +6,32 @@
 #parsed {
     flex-grow: 1;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
 }
 #parsed iframe {
     width: 90%;
+    flex-grow: 1;
+}
+
+#cvparsedmodal {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+    width: 100%;
+    z-index: 99;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+#cvparsedmodal #modal {
+    background-color: white;
+    min-width: 300px;
+    min-height: 200px;
+    max-width: 80%;
+}
+
+#cvparsedmodal.close {
+    display: none;
 }
