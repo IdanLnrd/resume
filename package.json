@@ -1,0 +1,21 @@
+{
+  "name": "unboxable-cv-parser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IdanLnrd/unboxable-cv-parser.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IdanLnrd/unboxable-cv-parser/issues"
+  },
+  "homepage": "https://github.com/IdanLnrd/unboxable-cv-parser#readme"
+}
