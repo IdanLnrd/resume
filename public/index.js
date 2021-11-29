@@ -10,7 +10,7 @@
     const modalEl = document.getElementById('modal');
     function modal(open, content) {
         if(open) {
-            modalEl.textContent = content;
+            modalEl.innerHTML = content;
             cvparsedmodal.classList.remove('close');
         } else if(!cvparsedmodal.classList.contains('close')) {
             cvparsedmodal.classList.add('close');
@@ -67,15 +67,29 @@
         const el = event.target;
         const { path } = el?.dataset || {};
         if(path) {
-            const formstorage = localStorage.getItem(path)
-            if(formstorage) {
-                return modal(true, formstorage);
-            }
+            let parsed = localStorage.getItem(path)
             const url = (`${HOST}/${CV_FILES_ROUTE}/${encodeURIComponent(path)}`);
             cvElement.src = url;
-            const { result } = await getParsed(path);
-            localStorage.setItem(path, result);
-            modal(true, result);
+            if(!parsed) {
+                
+                const { result } = await getParsed(path);
+                localStorage.setItem(path, result); 
+                parsed = result;
+            }
+
+            const obj = JSON.parse(parsed);
+            const html = `
+                ${
+                    Object.keys(obj).map(k => `
+                        <div class="m-2">
+                            <span class="mx-2">${k}: </span>
+                            <span class="">${obj[k]}</span>
+                        </div>
+                    `).join('')
+                }
+            `;
+
+            return modal(true, html);
         }
     });
 
