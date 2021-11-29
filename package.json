@@ -17,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/IdanLnrd/unboxable-cv-parser/issues"
   },
-  "homepage": "https://github.com/IdanLnrd/unboxable-cv-parser#readme"
+  "homepage": "https://github.com/IdanLnrd/unboxable-cv-parser#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
+  }
 }
