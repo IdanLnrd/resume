@@ -5,7 +5,7 @@ const {
 } = require("child_process");
 const express = require('express');
 const cors = require('cors');
-const { readFileSync, existsSync } = require('fs');
+const { readFileSync, existsSync, readdirSync } = require('fs');
 const {
     PORT,
     PUBLIC_DIR
@@ -22,9 +22,13 @@ app.use(cors());
 app.use(express.static(PUBLIC_DIR));
 
 app.get('/list/cv', (req, res) => {
-    return [
-        
-    ];
+    const dir = readdirSync(`${__dirname}/data`);
+    const pdfs = dir.filter(f => f.endsWith('.pdf'));
+    return res.json({ 
+        err: '', 
+        result: pdfs.slice(0, 50), 
+        input: null 
+    })
 });
 
 app.get('/parse/cv/:path', (req, res) => {
