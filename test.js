@@ -1,6 +1,6 @@
 const pdfExractor = require('./extractors/PDFExtractor');
 const docExtractor = require('./extractors/DOCEctractor');
-
+const { similarity } = require('@nlpjs/similarity');
 const base = '/Users/idangibly/Documents/GitHub/unboxable-cv-parser/data';
 const path = {
     doc: `${base}/5Edwardo.doc`,
@@ -9,11 +9,15 @@ const path = {
 };
 
 function cleanText(text) {
-    return  text.replace(/•/igu, '').replace(/\s+/mgiu, ' ').toLowerCase();
+    return  text.replace(/•+|!+/igu, '').replace(/\s+/mgiu, ' ').toLowerCase();
 }
 
 (async () => {
-
+const text1 = await pdfExractor.getText(path.pdf);
+const clean1 = cleanText(text1);
+const text2 = await docExtractor.getText(path.docx);
+const clean2 = cleanText(text2);
+console.log(clean1);
 //    const text1 = cleanText(await pdfExractor.getText(path.pdf));
 //    console.log(text1);
 //    console.log();
