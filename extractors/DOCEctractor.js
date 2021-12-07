@@ -6,8 +6,13 @@ class DOCExtractor {
         return new Promise(resolve => {
             const extractor = new WordExtractor();
             const extracted = extractor.extract(path);
-            const doc = await extracted;
-            resolve(doc.getBody());
+            extracted.then(doc => {
+                resolve(doc.getBody());
+            }).catch(err => {
+                console.error(err);
+                resolve();
+            });
+          
         });
     }
 }

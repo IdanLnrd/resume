@@ -7,7 +7,9 @@ const path = {
     docx: `${base}/1Amy.docx`
 };
 (async () => {
-    // const text = await pdfExractor.getText(path.pdf);
-    // const text = await docExtractor.getText(path.doc);
-    // const text = await docExtractor.getText(path.docx);
+    const text1 = await pdfExractor.getText(path.pdf);
+    console.log('\n===============================================\n');
+    const text2 = await docExtractor.getText(path.doc);
+    console.log('\n===============================================\n');
+    const text3 = await docExtractor.getText(path.docx);
 })();
