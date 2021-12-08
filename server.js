@@ -1,15 +1,22 @@
 
 require('dotenv').config();
+
+const { SentimentAnalyzer } = require('node-nlp');
+
+const sentiment = new SentimentAnalyzer({ language: 'en' });
+
 const { 
     execSync 
 } = require("child_process");
 const express = require('express');
 const cors = require('cors');
-const {existsSync, readdirSync } = require('fs');
+const {existsSync, readdirSync, readFileSync } = require('fs');
+const { resolve } = require('path');
 const {
     PORT,
     CV_DIR,
-    PUBLIC_DIR
+    PUBLIC_DIR,
+    CLEAN_CV_DIR
 } = process.env;
 
 function getParsedResume(filename) {
@@ -41,6 +48,32 @@ app.get('/parse/cv/:name', (req, res) => {
     }
     result = getParsedResume(path);
     return res.json({ err: '', result, input: name });
+});
+
+
+app.get('/parsed/cv/clean/random', (req, res) => {
+   
+    const cleanPath = resolve(__dirname, CLEAN_CV_DIR);
+    let result = null;
+    const exists = existsSync(cleanPath);
+    if(!exists) {
+        return res.json({ 
+            err: 'file not exists', 
+            result, 
+            input: null 
+        })
+    }
+
+    const files = readdirSync(cleanPath);
+    const count = files.length;
+    const randomIndex = Math.floor(count * Math.random());
+    const file = files[randomIndex];
+    const fullPath = resolve(cleanPath, file);
+    if(existsSync(fullPath)) {
+        const text = readFileSync(fullPath)?.toString('utf-8') || '';
+        result = { text };
+    }
+    return res.json({ err: '', result, input: null });
 });
 
 app.use('/cv', express.static(CV_DIR));
