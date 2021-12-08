@@ -20,14 +20,15 @@ const test2 = async () => {
     const { NlpManager } = require('node-nlp');
 
     (async () => {
-    let manager = new NlpManager({ 
+    const manager = new NlpManager({ 
         languages: ['en'], 
         forceNER: true, 
         ner: { useDuckling: false } });
     const result = await manager.process(
-        '2019 - 2022'
+        '2019 - 2300'
     );
-    console.log(JSON.stringify(result, null, 2));
+    const isvalid = result.entities.map(en => en.accuracy).filter(x => x >= 0.8).length > 0;
+    console.log(isvalid);
     })();
 }
 

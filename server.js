@@ -1,7 +1,18 @@
 
 require('dotenv').config();
 
-const { Date } = require('sugar');
+const { NlpManager } = require('node-nlp');
+const manager = new NlpManager({ 
+    languages: ['en'], 
+    forceNER: true, 
+    ner: { useDuckling: false } });
+
+function isDate(text) {
+    const result = await manager.process(text);
+    const isvalid = result.entities.map(en => en.accuracy)
+        .filter(x => x >= 0.8).length > 0;
+    return isvalid;
+}
 
 const { 
     execSync 
@@ -63,9 +74,18 @@ app.get('/parse/cv/prof/:name', (req, res) => {
     const json = getParsedResume(path);
     const { experience } = JSON.parse(json)
 
-    
+    let exp = '';
+    const experiences = [];
+    for(const e of experience) {
+        exp = (exp + e);
+        if(isDate(e)) {
+            experiences.push(exp);
+            exp = '';
+        }
+    }
+    experiences.push(exp);
 
-    return res.json({ err: '', result, input: name });
+    return res.json({ err: '', result: exp, input: name });
 });
 
 app.get('/parsed/cv/clean/random', (req, res) => {
