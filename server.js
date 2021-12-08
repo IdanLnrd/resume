@@ -1,9 +1,6 @@
 
 require('dotenv').config();
 
-const { SentimentAnalyzer } = require('node-nlp');
-
-const sentiment = new SentimentAnalyzer({ language: 'en' });
 
 const { 
     execSync 
@@ -18,7 +15,8 @@ const {
     PUBLIC_DIR,
     CLEAN_CV_DIR
 } = process.env;
-
+const { SentimentAnalyzer } = require('node-nlp');
+const sentiment = new SentimentAnalyzer({ language: 'en' });
 function getParsedResume(filename) {
     const cvCommand = `python3 ${__dirname}/main.py '${filename}'`
     const result = execSync(cvCommand);
@@ -71,9 +69,22 @@ app.get('/parsed/cv/clean/random', (req, res) => {
     const fullPath = resolve(cleanPath, file);
     if(existsSync(fullPath)) {
         const text = readFileSync(fullPath)?.toString('utf-8') || '';
-        result = { text };
+        sentiment
+            .getSentiment(text)
+            .then(data => {
+                return res.json({ err: '', result: { 
+                    sentiment: data, 
+                    text 
+                }, input: null });
+            })
+            .catch(err => res.json({ err: 'error sentiment: ' + err , result: null, input: null }));
+    } else {
+        return res.json({ 
+            err: 'file not exists - ' + fullPath, 
+            result, 
+            input: null 
+        })
     }
-    return res.json({ err: '', result, input: null });
 });
 
 app.use('/cv', express.static(CV_DIR));
