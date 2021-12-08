@@ -1,6 +1,7 @@
 
 require('dotenv').config();
 
+const { Date } = require('sugar');
 
 const { 
     execSync 
@@ -48,6 +49,24 @@ app.get('/parse/cv/:name', (req, res) => {
     return res.json({ err: '', result, input: name });
 });
 
+app.get('/parse/cv/prof/:name', (req, res) => {
+    const { name } = req.params;
+    if(!name) {
+        return res.json({ err: 'no name', result, input: name });
+    }
+    const path = `${__dirname}/${CV_DIR}/${name}`;
+    const exists = existsSync(path);
+    let result = null;
+    if(!exists) {
+        return res.json({ err: 'file not exists', result, input: name })
+    }
+    const json = getParsedResume(path);
+    const { experience } = JSON.parse(json)
+
+
+
+    return res.json({ err: '', result, input: name });
+});
 
 app.get('/parsed/cv/clean/random', (req, res) => {
    
@@ -77,7 +96,11 @@ app.get('/parsed/cv/clean/random', (req, res) => {
                     text 
                 }, input: null });
             })
-            .catch(err => res.json({ err: 'error sentiment: ' + err , result: null, input: null }));
+            .catch(err => res.json({ 
+                err: 'error sentiment: ' + err , 
+                result: null, 
+                input: null 
+            }));
     } else {
         return res.json({ 
             err: 'file not exists - ' + fullPath, 

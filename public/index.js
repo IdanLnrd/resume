@@ -73,11 +73,15 @@
             if(!parsed) {
                 
                 const { result } = await getParsed(path);
+          
                 localStorage.setItem(path, result); 
                 parsed = result;
             }
 
             const obj = JSON.parse(parsed);
+
+            console.log(obj, result);
+
             const html = `
                 ${
                     Object.keys(obj).map(k => `
