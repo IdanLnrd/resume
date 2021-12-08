@@ -245,3 +245,6 @@ dist
 
 local/
 
+.DS_Store
+
+clean/

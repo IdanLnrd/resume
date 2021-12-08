@@ -5,7 +5,7 @@ const { CV_DIR, CLEAN_CV_DIR } = process.env;
 const pdfExtractor = require('./extractors/PDFExtractor');
 const docExtractor = require('./extractors/DOCEctractor');
 function cleanText(text) {
-    return  text.replace(/•+|!+/igu, '').replace(/\s+/mgiu, ' ').toLowerCase();
+    return  (text || '').replace(/•+|!+/igu, '').replace(/\s+/mgiu, ' ').toLowerCase();
 }
 const prepare = () => {
     const raw = resolve(__dirname, CV_DIR);
@@ -41,10 +41,21 @@ const run = async () => {
     
     let text, ext;
     let counter = 0;
-    const n = String(cvpaths.length).length;
+    
+    const count = cvpaths.length;
+    let progress = 1;
+    const n = String(count).length;
+
     for(const cv of cvpaths) {
-        ext = extname(cv);
+        console.clear();
+        console.log(`Clean ${progress++} of ${count}`);
+        
+        const progressString = "*".repeat(Math.floor(100 * (progress / count)));
+        console.log(progressString.padEnd("."));
         console.log(cv);
+
+        ext = extname(cv);
+      
         if(ext === EXT.txt) {
             text = cleanText(readFileSync(cv)?.toString() || '');
         }
