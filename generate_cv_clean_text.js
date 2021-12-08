@@ -1,11 +1,23 @@
 require('dotenv').config();
-const { readdirSync, rmdirSync, existsSync, writeFileSync, mkdirSync, rmSync, readFileSync } = require('fs');
-const { resolve , extname } = require('path');
+const { 
+    readdirSync, 
+    rmdirSync, 
+    existsSync, 
+    writeFileSync, 
+    mkdirSync,
+    readFileSync 
+} = require('fs');
+
+const { resolve , extname, basename } = require('path');
 const { CV_DIR, CLEAN_CV_DIR } = process.env;
 const pdfExtractor = require('./extractors/PDFExtractor');
 const docExtractor = require('./extractors/DOCEctractor');
+
 function cleanText(text) {
-    return  (text || '').replace(/•+|!+/igu, '').replace(/\s+/mgiu, ' ').toLowerCase();
+    return  (text || '')
+        .replace(/•+|!+/mgiu, '')
+        .replace(/\s+/mgiu, ' ')
+        .toLowerCase();
 }
 const prepare = () => {
     const raw = resolve(__dirname, CV_DIR);
@@ -47,13 +59,8 @@ const run = async () => {
     const n = String(count).length;
 
     for(const cv of cvpaths) {
-        console.clear();
-        console.log(`Clean ${progress++} of ${count}`);
+ 
         
-        const progressString = "*".repeat(Math.floor(100 * (progress / count)));
-        console.log(progressString.padEnd("."));
-        console.log(cv);
-
         ext = extname(cv);
       
         if(ext === EXT.txt) {
@@ -70,7 +77,12 @@ const run = async () => {
             writeFileSync(newpath, text);
             counter++;
         }
-     
+        console.clear();        
+        const ratio = Math.floor(50 * (progress++ / count));
+        const progressString = "|".repeat(ratio);
+        console.log(`Cleaning cv files (${ratio * 2}%)`);
+        console.log(progressString.padEnd(50, ":"));
+        console.log();
     }
 
 
