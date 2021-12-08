@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/IdanLnrd/unboxable-cv-parser#readme",
   "dependencies": {
+    "@nlpjs/lang-en": "^4.22.0",
     "@nlpjs/similarity": "^4.21.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",

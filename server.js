@@ -63,7 +63,7 @@ app.get('/parse/cv/prof/:name', (req, res) => {
     const json = getParsedResume(path);
     const { experience } = JSON.parse(json)
 
-
+    
 
     return res.json({ err: '', result, input: name });
 });
