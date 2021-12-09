@@ -1,7 +1,6 @@
 
 (async () => {
     const HOST = location.origin;
-    const CV_FILES_ROUTE = 'cv';
     const GET_CV_LIST = `${HOST}/list/cv`;
     const GET_PARSED = `${HOST}/parse/cv`;
     const url = new URL(location.href);
@@ -93,7 +92,8 @@
         'parse-all': async (path) => {
             const localParsedString = localStorage.getItem(path);
             let cvJson = {};
-            const url = (`${HOST}/${CV_FILES_ROUTE}/${encodeURIComponent(path)}`);
+            const url = (`${HOST}/${encodeURIComponent(path)}`);
+            console.log(url);
             cvElement.src = url;
             if(localParsedString) {
                 cvJson = JSON.parse(localParsedString);

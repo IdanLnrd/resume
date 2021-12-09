@@ -28,9 +28,16 @@ const {
 } = require('./sovren');
 
 const multer = require('multer');
-const upload = multer({
-  dest: `${UPLOAD_CV_DIR}/`
-}); 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    }
+})
+
+const upload = multer({ storage: storage });
 
 async function getParsedResumeBySovren(path) {
     return await parseCV(path);
@@ -49,7 +56,6 @@ app.get('/list/cv', (req, res) => {
 });
 
 app.post('/uploadcv', upload.single('file-to-upload'), (req, res) => {
-    console.log('file', req.file);
     const { filename } = req.file
     if(!filename) {
         return res.redirect('/');
@@ -115,11 +121,12 @@ app.get('/parsed/cv/clean/random', (req, res) => {
     }
 });
 
-app.use('/cv', express.static(CV_DIR));
-
 app.use(express.static('./node_modules'));
-app.use(express.static(PUBLIC_DIR));
+app.use(express.static(CV_DIR));
 app.use(express.static(UPLOAD_CV_DIR));
+app.use(express.static(PUBLIC_DIR));
+
+
 app.listen(PORT, 
     () => console.log(`server running on port: ${PORT}`)
 );
