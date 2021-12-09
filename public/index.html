@@ -10,7 +10,8 @@
     rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <link href="index.css" rel="stylesheet" >
-
+    <link href="jsoneditor/dist/jsoneditor.min.css" rel="stylesheet" type="text/css">
+    
     <title>Unboxable cv parser</title>
   </head>
   <body>
@@ -23,9 +24,21 @@
       <span>Unboxable cv parser<span>
     </h1>
     <div id="main">
-      <div id="pdfs">
-
+      <div id="jsoneditor">
+        <div id="jsoneditor-actions">
+          <button id="show-editor" type="button" data-action="show-editor" class="btn btn-light my-2">
+            <i class="bi bi-arrow-left-square"></i>
+            Show
+      
+          </button>
+          <button id="hide-editor" type="button" data-action="hide-editor" class="btn btn-light my-2">
+            Hide
+            <i class="bi bi-arrow-right-square"></i>
+          </button>
+         
+        </div>
       </div>
+      <div id="pdfs"></div>
       <div id="parsed">
         <iframe class="border" id="cv"></iframe>
       <div>
@@ -41,8 +54,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
     -->
+    <script src="jsoneditor/dist/jsoneditor.min.js"></script>
     <script src="index.js"></script>
-
 
 
   </body>

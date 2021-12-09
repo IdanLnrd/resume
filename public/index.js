@@ -1,9 +1,19 @@
+function initEditor() {
+    const container = document.getElementById('jsoneditor')
+
+    const options = {
+      mode: 'view'
+    }
+  
+    const editor = new JSONEditor(container, options);
+    return editor;
+}
 (async () => {
     const HOST = location.origin;
     const CV_FILES_ROUTE = 'cv';
     const GET_CV_LIST = `${HOST}/list/cv`;
     const GET_PARSED = `${HOST}/parse/cv`;
-
+    const editor = initEditor();
     const pdfsElement = document.getElementById('pdfs');
     const cvElement = document.getElementById('cv');
     const cvparsedmodal = document.getElementById('cvparsedmodal');
@@ -24,6 +34,7 @@
             modal(false);
         }
     });
+
     async function getCvList() {
         try {
             const result = await fetch(GET_CV_LIST);
@@ -81,16 +92,9 @@
             }
 
             console.log(cvJson);
-
+            editor.set(cvJson);
             const html = `
-                ${
-                    Object.keys(cvJson).map(k => `
-                        <div class="m-2">
-                            <span class="mx-2">${k}: </span>
-                            <span class="">${cvJson[k]}</span>
-                        </div>
-                    `).join('')
-                }
+                <div>done!</div>
             `;
 
             return modal(true, html);

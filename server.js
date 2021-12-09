@@ -112,6 +112,7 @@ app.get('/parsed/cv/clean/random', (req, res) => {
 
 app.use('/cv', express.static(CV_DIR));
 
+app.use(express.static('./node_modules'));
 app.use(express.static(PUBLIC_DIR));
 app.listen(PORT, 
     () => console.log(`server running on port: ${PORT}`)

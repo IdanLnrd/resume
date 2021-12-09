@@ -39,3 +39,15 @@
 .bi {
     pointer-events: none;
 }
+
+#jsoneditor {
+    position: absolute;
+    z-index: 1;
+    right: 16px;
+    width: 600px;
+}
+
+#jsoneditor-actions {
+    position: relative;
+}
+
