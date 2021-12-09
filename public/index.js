@@ -1,23 +1,16 @@
-function initEditor() {
-    const container = document.getElementById('jsoneditor')
 
-    const options = {
-      mode: 'view'
-    }
-  
-    const editor = new JSONEditor(container, options);
-    return editor;
-}
 (async () => {
     const HOST = location.origin;
     const CV_FILES_ROUTE = 'cv';
     const GET_CV_LIST = `${HOST}/list/cv`;
     const GET_PARSED = `${HOST}/parse/cv`;
-    const editor = initEditor();
+   
     const pdfsElement = document.getElementById('pdfs');
     const cvElement = document.getElementById('cv');
     const cvparsedmodal = document.getElementById('cvparsedmodal');
     const modalEl = document.getElementById('modal');
+    const jsoneditorEl = document.getElementById('jsoneditor');
+    const showeditor = document.getElementById('show-editor');
     function modal(open, content) {
         if(open) {
             modalEl.innerHTML = content;
@@ -27,6 +20,15 @@ function initEditor() {
             modalEl.innerHTML = "";
         }
     }
+
+    function initEditor() {
+        const options = {
+          mode: 'view'
+        }
+        const editor = new JSONEditor(jsoneditorEl, options);
+        return editor;
+    }
+    const editor = initEditor();
 
     cvparsedmodal.addEventListener('click', event => {
         const bkdrp = event.target.getAttribute('id') === 'cvparsedmodal';
@@ -79,13 +81,13 @@ function initEditor() {
 
     const actions = {
         'show-editor': () => {
-            const ed = document.getElementById('jsoneditor');
-            if(!ed.classList.contains('show')) {
-                ed.classList.add('show');
+     
+            if(!jsoneditorEl.classList.contains('show')) {
+                jsoneditorEl.classList.add('show');
             }
         },
         'hide-editor': () => {
-            document.getElementById('jsoneditor').classList.remove('show');
+            jsoneditorEl.classList.remove('show');
         },
         'parse-all': async (path) => {
             const localParsedString = localStorage.getItem(path);
@@ -95,7 +97,9 @@ function initEditor() {
             if(localParsedString) {
                 cvJson = JSON.parse(localParsedString);
             } else {
+                jsoneditorEl.classList.add('loading');
                 const { result } = await getParsed(path);
+                jsoneditorEl.classList.remove('loading');
                 cvJson = result;
                 localStorage.setItem(path, JSON.stringify(cvJson)); 
             }

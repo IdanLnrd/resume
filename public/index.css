@@ -4,6 +4,9 @@
     height: 100%;
     
 }
+#pdfs {
+    overflow: scroll;
+}
 body, html {
     overflow: hidden;
     height: 100%;
@@ -73,4 +76,9 @@ body, html {
 
 #jsoneditor.show #jsoneditor-actions #show-editor {
     display: none;
+}
+
+#jsoneditor:not(.show).loading #jsoneditor-actions #show-editor {
+    pointer-events: none;
+    opacity: 0.5;
 }
