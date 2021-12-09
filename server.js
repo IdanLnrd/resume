@@ -35,6 +35,14 @@ function getParsedResume(filename) {
     return (result.toString())
 }
 
+const {
+    parseCV
+} = require('./sovren');
+
+async function getParsedResumeBySovren(path) {
+    return await parseCV(path);
+}
+
 const app = express();
 app.use(cors());
 
@@ -49,49 +57,14 @@ app.get('/list/cv', (req, res) => {
 });
 
 app.get('/parse/cv/:name', (req, res) => {
-    const name = req.params.name;
+    const {name} = req.params;
     const path = `${__dirname}/${CV_DIR}/${name}`;
     const exists = existsSync(path);
-    let result = null;
     if(!exists) {
-        return res.json({ err: 'file not exists', result, input: name })
+        return res.json({ err: 'file not exists', result: null, input: name })
     }
-    result = getParsedResume(path);
-    return res.json({ err: '', result, input: name });
-});
-
-app.get('/parse/cv/prof/:name', async (req, res) => {
-    const { name } = req.params;
-    if(!name) {
-        return res.json({ 
-            err: 'no name', result, input: name 
-        });
-    }
-    const path = `${__dirname}/${CV_DIR}/${name}`;
-    const exists = existsSync(path);
-    let result = null;
-    if(!exists) {
-        return res.json({ 
-            err: 'file not exists', result, input: name 
-        });
-    }
-    const json = getParsedResume(path);
-    const { experience } = JSON.parse(json)
-
-    let exp = '';
-    const experiences = [];
-    for(const e of experience) {
-        exp = (exp + e);
-        if(await isDate(e)) {
-            experiences.push(exp);
-            exp = '';
-        }
-    }
-
-    experiences.push(exp);
-
-    return res.json({ 
-        err: '', result: experiences, input: name 
+    getParsedResumeBySovren(path).then(result => {
+        return res.json({ err: '', result, input: name });
     });
 });
 

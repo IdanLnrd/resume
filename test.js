@@ -31,5 +31,3 @@ const test2 = async () => {
     console.log(isvalid);
     })();
 }
-
-test2();

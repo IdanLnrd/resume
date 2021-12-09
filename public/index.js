@@ -51,49 +51,58 @@
     <ul class="list-group">
         ${
             result.map(
-                r => `<button 
-                    type="button" 
-                    data-path='${r}'
-                    class="list-group-item 
-                    list-group-item-action">${r}</button>`
+                r => `<div
+                    class="list-group-item d-flex justify-content-between">
+                    <span>${r}</span>
+                    <button 
+                        class="btn"
+                        data-action="parse-all"
+                        data-data='${r}'>
+                        <i class="bi bi-file-earmark-person"></i>
+                    </button>
+                </div>`
             ).join('')
         }
     </ul>
     `;
 
-
-
-    pdfsElement.addEventListener('click', async event => {
-        const el = event.target;
-        const { path } = el?.dataset || {};
-        if(path) {
-            let parsed = localStorage.getItem(path)
+    const actions = {
+        'parse-all': async (path) => {
+            const localParsedString = localStorage.getItem(path);
+            let cvJson = {};
             const url = (`${HOST}/${CV_FILES_ROUTE}/${encodeURIComponent(path)}`);
             cvElement.src = url;
-            if(!parsed) {
-                
+            if(localParsedString) {
+                cvJson = JSON.parse(localParsedString);
+            } else {
                 const { result } = await getParsed(path);
-          
-                localStorage.setItem(path, result); 
-                parsed = result;
+                cvJson = result;
+                localStorage.setItem(path, JSON.stringify(cvJson)); 
             }
 
-            const obj = JSON.parse(parsed);
-
-            console.log(obj, result);
+            console.log(cvJson);
 
             const html = `
                 ${
-                    Object.keys(obj).map(k => `
+                    Object.keys(cvJson).map(k => `
                         <div class="m-2">
                             <span class="mx-2">${k}: </span>
-                            <span class="">${obj[k]}</span>
+                            <span class="">${cvJson[k]}</span>
                         </div>
                     `).join('')
                 }
             `;
 
             return modal(true, html);
+        }
+    };
+
+    pdfsElement.addEventListener('click', async event => {
+        const el = event.target;
+        const { data, action } = el?.dataset || {};
+        const func = actions[action];
+        if(func) {
+            func(data);
         }
     });
 

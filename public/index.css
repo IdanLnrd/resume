@@ -35,3 +35,7 @@
 #cvparsedmodal.close {
     display: none;
 }
+
+.bi {
+    pointer-events: none;
+}
