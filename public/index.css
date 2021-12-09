@@ -2,6 +2,7 @@
     display: flex;
     width: 100%;
     height: 100%;
+    
 }
 body, html {
     overflow: hidden;
@@ -49,8 +50,13 @@ body, html {
     z-index: 1;
     right: 16px;
     width: 600px;
-    transform: translateX(105%);
+    transform: translateX(620px);
     transition: transform 0.2s;
+}
+.jsoneditor {
+    overflow-y: auto;
+    overflow-x: visible;
+    max-height: 600px;
 }
 
 #jsoneditor-actions {
@@ -58,7 +64,6 @@ body, html {
 }
 
 #jsoneditor-actions #show-editor {
-    position: absolute;
     transform: translateX(-110%);
 }
 
