@@ -41,16 +41,20 @@ app.use(cors());
 
 app.get('/list/cv', (req, res) => {
     const dir = readdirSync(`${__dirname}/data`);
-    const pdfs = dir.filter(f => f.endsWith('.pdf'));
     return res.json({ 
         err: '', 
-        result: pdfs.slice(0, 50), 
+        result: dir.slice(0, 50), 
         input: null 
     })
 });
 
 app.post('/uploadcv', upload.single('file-to-upload'), (req, res) => {
-    res.redirect(`/?file=${req.file?.originalname}`);
+    console.log('file', req.file);
+    const { filename } = req.file
+    if(!filename) {
+        return res.redirect('/');
+    }
+    res.redirect(`/?file=${filename}`);
 });
 
 app.get('/parse/cv/:name', (req, res) => {
