@@ -50,7 +50,7 @@ app.get('/list/cv', (req, res) => {
     const dir = readdirSync(`${__dirname}/data`);
     return res.json({ 
         err: '', 
-        result: dir.slice(0, 50), 
+        result: dir.filter(s => s.endsWith('.pdf')).slice(0, 50), 
         input: null 
     })
 });
