@@ -78,6 +78,15 @@ function initEditor() {
     `;
 
     const actions = {
+        'show-editor': () => {
+            const ed = document.getElementById('jsoneditor');
+            if(!ed.classList.contains('show')) {
+                ed.classList.add('show');
+            }
+        },
+        'hide-editor': () => {
+            document.getElementById('jsoneditor').classList.remove('show');
+        },
         'parse-all': async (path) => {
             const localParsedString = localStorage.getItem(path);
             let cvJson = {};
@@ -93,18 +102,15 @@ function initEditor() {
 
             console.log(cvJson);
             editor.set(cvJson);
-            const html = `
-                <div>done!</div>
-            `;
-
-            return modal(true, html);
+    
         }
     };
 
-    pdfsElement.addEventListener('click', async event => {
+    window.addEventListener('click', async event => {
         const el = event.target;
         const { data, action } = el?.dataset || {};
         const func = actions[action];
+        console.log('action:', action);
         if(func) {
             func(data);
         }
