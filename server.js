@@ -1,19 +1,6 @@
 
 require('dotenv').config();
 
-const { NlpManager } = require('node-nlp');
-const manager = new NlpManager({ 
-    languages: ['en'], 
-    forceNER: true, 
-    ner: { useDuckling: false } });
-
-async function isDate(text) {
-    const result = await manager.process(text);
-    const isvalid = result.entities.map(en => en.accuracy)
-        .filter(x => x >= 0.8).length > 0;
-    return isvalid;
-}
-
 const { 
     execSync 
 } = require("child_process");
@@ -39,6 +26,11 @@ const {
     parseCV
 } = require('./sovren');
 
+const multer = require('multer');
+const upload = multer({
+  dest: 'data/'
+}); 
+
 async function getParsedResumeBySovren(path) {
     return await parseCV(path);
 }
@@ -55,7 +47,9 @@ app.get('/list/cv', (req, res) => {
         input: null 
     })
 });
-
+app.post('/uploadcv', upload.single('file-to-upload'), (req, res) => {
+    res.redirect(`/?file=${req.file?.originalname}`);
+});
 app.get('/parse/cv/:name', (req, res) => {
     const {name} = req.params;
     const path = `${__dirname}/${CV_DIR}/${name}`;

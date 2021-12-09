@@ -4,13 +4,14 @@
     const CV_FILES_ROUTE = 'cv';
     const GET_CV_LIST = `${HOST}/list/cv`;
     const GET_PARSED = `${HOST}/parse/cv`;
-   
+    const url = new URL(location.href);
+    
     const pdfsElement = document.getElementById('pdfs');
     const cvElement = document.getElementById('cv');
     const cvparsedmodal = document.getElementById('cvparsedmodal');
     const modalEl = document.getElementById('modal');
     const jsoneditorEl = document.getElementById('jsoneditor');
-    const showeditor = document.getElementById('show-editor');
+
     function modal(open, content) {
         if(open) {
             modalEl.innerHTML = content;
@@ -122,5 +123,9 @@
 
     pdfsElement.innerHTML = htmlList;
 
+    const file = url.searchParams.get('file');
+    if(file) {
+        actions['parse-all'](file);
+    }
 
 })();

@@ -38,7 +38,16 @@
          
         </div>
       </div>
-      <div id="pdfs"></div>
+      <div>
+        <div>
+          <form action="/uploadcv" enctype="multipart/form-data" method="post">
+            <input type="file" name="file-to-upload">
+            <input type="submit" value="Upload CV">
+          </form> 
+        </div>
+        <div id="pdfs"></div>
+      </div>
+  
       <div id="parsed">
         <iframe class="border" id="cv"></iframe>
       <div>
