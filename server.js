@@ -1,9 +1,9 @@
 
 require('dotenv').config();
 
-const { 
-    execSync 
-} = require("child_process");
+// const { 
+//     execSync 
+// } = require("child_process");
 const express = require('express');
 const cors = require('cors');
 const {existsSync, readdirSync, readFileSync } = require('fs');
@@ -12,15 +12,16 @@ const {
     PORT,
     CV_DIR,
     PUBLIC_DIR,
-    CLEAN_CV_DIR
+    CLEAN_CV_DIR,
+    UPLOAD_CV_DIR
 } = process.env;
 const { SentimentAnalyzer } = require('node-nlp');
 const sentiment = new SentimentAnalyzer({ language: 'en' });
-function getParsedResume(filename) {
-    const cvCommand = `python3 ${__dirname}/main.py '${filename}'`
-    const result = execSync(cvCommand);
-    return (result.toString())
-}
+// function getParsedResume(filename) {
+//     const cvCommand = `python3 ${__dirname}/main.py '${filename}'`
+//     const result = execSync(cvCommand);
+//     return (result.toString())
+// }
 
 const {
     parseCV
@@ -28,7 +29,7 @@ const {
 
 const multer = require('multer');
 const upload = multer({
-  dest: 'data/'
+  dest: `${UPLOAD_CV_DIR}/`
 }); 
 
 async function getParsedResumeBySovren(path) {
@@ -47,16 +48,22 @@ app.get('/list/cv', (req, res) => {
         input: null 
     })
 });
+
 app.post('/uploadcv', upload.single('file-to-upload'), (req, res) => {
     res.redirect(`/?file=${req.file?.originalname}`);
 });
+
 app.get('/parse/cv/:name', (req, res) => {
     const {name} = req.params;
-    const path = `${__dirname}/${CV_DIR}/${name}`;
-    const exists = existsSync(path);
-    if(!exists) {
-        return res.json({ err: 'file not exists', result: null, input: name })
+    const datapath = `${__dirname}/${CV_DIR}/${name}`;
+    const uploadedpath = `${__dirname}/${UPLOAD_CV_DIR}/${name}`;
+    const dexists = existsSync(datapath);
+    const uexists = existsSync(uploadedpath);
+   
+    if(!dexists && !uexists) {
+        return res.json({ err: 'file not exists', result: null, input: name });
     }
+    const path = dexists ? datapath : uploadedpath;
     getParsedResumeBySovren(path).then(result => {
         return res.json({ err: '', result, input: name });
     });
@@ -108,6 +115,7 @@ app.use('/cv', express.static(CV_DIR));
 
 app.use(express.static('./node_modules'));
 app.use(express.static(PUBLIC_DIR));
+app.use(express.static(UPLOAD_CV_DIR));
 app.listen(PORT, 
     () => console.log(`server running on port: ${PORT}`)
 );
