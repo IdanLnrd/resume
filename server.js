@@ -7,7 +7,7 @@ const manager = new NlpManager({
     forceNER: true, 
     ner: { useDuckling: false } });
 
-function isDate(text) {
+async function isDate(text) {
     const result = await manager.process(text);
     const isvalid = result.entities.map(en => en.accuracy)
         .filter(x => x >= 0.8).length > 0;
@@ -60,16 +60,20 @@ app.get('/parse/cv/:name', (req, res) => {
     return res.json({ err: '', result, input: name });
 });
 
-app.get('/parse/cv/prof/:name', (req, res) => {
+app.get('/parse/cv/prof/:name', async (req, res) => {
     const { name } = req.params;
     if(!name) {
-        return res.json({ err: 'no name', result, input: name });
+        return res.json({ 
+            err: 'no name', result, input: name 
+        });
     }
     const path = `${__dirname}/${CV_DIR}/${name}`;
     const exists = existsSync(path);
     let result = null;
     if(!exists) {
-        return res.json({ err: 'file not exists', result, input: name })
+        return res.json({ 
+            err: 'file not exists', result, input: name 
+        });
     }
     const json = getParsedResume(path);
     const { experience } = JSON.parse(json)
@@ -78,14 +82,17 @@ app.get('/parse/cv/prof/:name', (req, res) => {
     const experiences = [];
     for(const e of experience) {
         exp = (exp + e);
-        if(isDate(e)) {
+        if(await isDate(e)) {
             experiences.push(exp);
             exp = '';
         }
     }
+
     experiences.push(exp);
 
-    return res.json({ err: '', result: exp, input: name });
+    return res.json({ 
+        err: '', result: experiences, input: name 
+    });
 });
 
 app.get('/parsed/cv/clean/random', (req, res) => {
