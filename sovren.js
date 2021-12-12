@@ -7,33 +7,27 @@ const httpStatusCodes = {
     OK: 200
 }
 
-class Sovren {
-
-
-parseCV(filePath) {
+const sovrenRequest = ({ modifiedDate, base64Doc, path }) => {
     return new Promise(resolve => {
-        const buffer = fs.readFileSync(filePath);
-        const base64Doc = buffer.toString('base64');
-         
-        const modifiedDate = (new Date(fs.statSync(filePath).mtimeMs)).toISOString().substring(0, 10);
+        const modifiedDate = new Date(modifiedDate).toISOString().substring(0, 10);
         const postData = JSON.stringify({
-          'DocumentAsBase64String': base64Doc,
-          'DocumentLastModified': modifiedDate
+        'DocumentAsBase64String': base64Doc,
+        'DocumentLastModified': modifiedDate
         });
         const options = {
-          host: 'rest.resumeparsing.com',
-          protocol: 'https:',
-          path: '/v10/parser/resume',
-          method: 'POST',
-          headers: {
-              'Sovren-AccountId': String(SOVREN_ACCOUNT_ID),
-              'Sovren-ServiceKey': String(SOVREN_API_KEY),
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              'Content-Length': Buffer.byteLength(postData)
-          }
+        host: 'rest.resumeparsing.com',
+        protocol: 'https:',
+        path,
+        method: 'POST',
+        headers: {
+            'Sovren-AccountId': String(SOVREN_ACCOUNT_ID),
+            'Sovren-ServiceKey': String(SOVREN_API_KEY),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(postData)
+        }
         };
-         
+        
         const request = http.request(options, function (response) {
             const status = response.statusCode;      
             if(status !== httpStatusCodes.OK) {
@@ -63,9 +57,25 @@ parseCV(filePath) {
             request.write(postData);
             request.end();
     });
-   
 }
 
+class Sovren {
+
+    async parseCV(filePath) {
+        const buffer = fs.readFileSync(filePath);
+        const base64Doc = buffer.toString('base64');
+        const modifiedDate = fs.statSync(filePath).mtimeMs;
+        const path = '/v10/parser/resume';
+        return await sovrenRequest({ base64Doc, path, modifiedDate });
+    }
+
+    async parseJob(filePath) {
+        const buffer = fs.readFileSync(filePath);
+        const base64Doc = buffer.toString('base64');
+        const modifiedDate = fs.statSync(filePath).mtimeMs;
+        const path = '/v10/parser/joborder';
+        return await sovrenRequest({ base64Doc, path, modifiedDate });
+    }
 
 }
 
@@ -73,5 +83,6 @@ parseCV(filePath) {
 const sovern = new Sovren();
 
 module.exports = {
-    parseCV: sovern.parseCV
+    parseCV: sovern.parseCV,
+    parseJob: sovern.parseJob
 };
