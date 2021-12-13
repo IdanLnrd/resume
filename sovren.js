@@ -11,7 +11,7 @@ const sovrenRequest = ({ modifiedDate, base64Doc, path }) => {
     return new Promise(resolve => {
         const modifiedDate = new Date(modifiedDate).toISOString().substring(0, 10);
         const postData = JSON.stringify({
-        'DocumentAsBase64String': base64Doc,
+        'DocumentAsString': base64Doc,
         'DocumentLastModified': modifiedDate
         });
         const options = {
